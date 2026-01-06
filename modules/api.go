@@ -46,7 +46,7 @@ func FetchDates() map[string][]string {
 
 func FetchRelations() map[string]Relation {
 	var relations map[string]Relation
-	err := GetJson(baseURL+"/relations", &relations)
+	err := GetJson(baseURL+"/relation", &relations)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
