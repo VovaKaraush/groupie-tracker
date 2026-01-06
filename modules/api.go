@@ -1,4 +1,4 @@
-package main
+package modules
 
 import (
 	"encoding/json"
@@ -17,7 +17,7 @@ func GetJson(url string, data interface{}) error {
 	return json.NewDecoder(resp.Body).Decode(data)
 }
 
-func fetchArtists() []Artist {
+func FetchArtists() []Artist {
 	var artists []Artist
 	err := GetJson(baseURL+"/artists", &artists)
 	if err != nil {
@@ -26,7 +26,7 @@ func fetchArtists() []Artist {
 	return artists
 }
 
-func fetchLocations() map[string][]string {
+func FetchLocations() map[string][]string {
 	var locations map[string][]string
 	err := GetJson(baseURL+"/locations", &locations)
 	if err != nil {
@@ -35,7 +35,7 @@ func fetchLocations() map[string][]string {
 	return locations
 }
 
-func fetchDates() map[string][]string {
+func FetchDates() map[string][]string {
 	var dates map[string][]string
 	err := GetJson(baseURL+"/dates", &dates)
 	if err != nil {
@@ -44,7 +44,7 @@ func fetchDates() map[string][]string {
 	return dates
 }
 
-func fetchRelations() map[string]Relation {
+func FetchRelations() map[string]Relation {
 	var relations map[string]Relation
 	err := GetJson(baseURL+"/relations", &relations)
 	if err != nil {

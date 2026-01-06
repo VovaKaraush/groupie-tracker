@@ -1,14 +1,15 @@
 package main
 
 import (
+	"groupie-tracker/modules"
 	"log"
 )
 
 func main() {
-	artists := fetchArtists()
-	locations := fetchLocations()
-	dates := fetchDates()
-	relations := fetchRelations()
+	artists := modules.FetchArtists()
+	locations := modules.FetchLocations()
+	dates := modules.FetchDates()
+	relations := modules.FetchRelations()
 
 	log.Println("Fetches : ")
 	log.Printf("Fetched %d artists", len(artists))

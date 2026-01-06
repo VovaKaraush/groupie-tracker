@@ -1,4 +1,4 @@
-package main
+package modules
 
 // Models used by the API
 type Artist struct {
