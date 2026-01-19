@@ -2,32 +2,41 @@ package modules
 
 // Models used by the API
 type Artist struct {
-	ID           int      `json:"id"`
-	Image        string   `json:"image"`
-	Name         string   `json:"name"`
-	Members      []string `json:"members"`
-	CreationDate int      `json:"creationDate"`
-	FirstAlbum   string   `json:"firstAlbum"`
-	Locations    []string `json:"locations"`
-	ConcertDates []string `json:"concertDates"`
-	Relations    int      `json:"relations"`
+	ID               int      `json:"id"`
+	Image            string   `json:"image"`
+	Name             string   `json:"name"`
+	Members          []string `json:"members"`
+	CreationDate     int      `json:"creationDate"`
+	FirstAlbum       string   `json:"firstAlbum"`
+	ConcertLocations string   `json:"locations"`    // !!link!!
+	ConcertDates     string   `json:"concertDates"` // !!link!!
+	Relations        string   `json:"relations"`    // !!link!!
 }
 
 type Location struct {
-	ID    int          `json:"id"`
-	Towns []string     `json:"locations"`
-	Dates ConcertDates `json:"dates"`
+	ID        int      `json:"id"`
+	Locations []string `json:"locations"`
+	Dates     string   `json:"dates"`
 }
 
-type Locations struct {
-	Location Location
+type LocationsResponse struct {
+	Index []Location `json:"index"`
 }
 
-type ConcertDates struct {
-	ID    int    `json:"id"`
-	Dates string `json:"dates"`
+type DateInfo struct {
+	ID    int      `json:"id"`
+	Dates []string `json:"dates"`
+}
+
+type DatesResponse struct {
+	Index []DateInfo `json:"index"`
 }
 
 type Relation struct {
-	DatesLocations map[string][]string `json:"datesLocations"`
+	ID             int                    `json:"id"`
+	DatesLocations map[string]interface{} `json:"datesLocations"`
+}
+
+type RelationResponse struct {
+	Index []Relation `json:"index"`
 }
