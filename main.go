@@ -1,8 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"groupie-tracker/handlers"
 	"groupie-tracker/modules"
 	"log"
+	"net/http"
 )
 
 func main() {
@@ -20,4 +23,12 @@ func main() {
 	log.Printf("Fetched %d dates", len(data.Dates))
 	log.Printf("Fetched %d relations", len(data.Relations))
 
+	handlers.SortData(&data)
+
+	http.HandleFunc("/", handlers.HomeHandler)
+	http.HandleFunc("/search", handlers.SearchHandler)
+	http.HandleFunc("/artist", handlers.ArtistHandler)
+
+	fmt.Println("Serveur démarré sur http://localhost:8080")
+	http.ListenAndServe(":8080", nil)
 }
