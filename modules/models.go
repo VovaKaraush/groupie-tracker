@@ -23,6 +23,10 @@ type LocationsResponse struct {
 	Index []Location `json:"index"`
 }
 
+type RelationResponse struct {
+	Index []Relation `json:"index"`
+}
+
 type DateInfo struct {
 	ID    int      `json:"id"`
 	Dates []string `json:"dates"`
@@ -35,8 +39,4 @@ type DatesResponse struct {
 type Relation struct {
 	ID             int                    `json:"id"`
 	DatesLocations map[string]interface{} `json:"datesLocations"`
-}
-
-type RelationResponse struct {
-	Index []Relation `json:"index"`
 }

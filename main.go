@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+
 	artists := modules.FetchArtists()
 	locations := modules.FetchLocations()
 	dates := modules.FetchDates()
