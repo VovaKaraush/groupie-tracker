@@ -26,29 +26,29 @@ func FetchArtists() []Artist {
 	return artists
 }
 
-func FetchLocations() map[string][]string {
-	var locations map[string][]string
-	err := GetJson(baseURL+"/locations", &locations)
+func FetchLocations() []Location {
+	var locResp LocationsResponse
+	err := GetJson(baseURL+"/locations", &locResp)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
-	return locations
+	return locResp.Index
 }
 
-func FetchDates() map[string][]string {
-	var dates map[string][]string
-	err := GetJson(baseURL+"/dates", &dates)
+func FetchDates() []DateInfo {
+	var datesResp DatesResponse
+	err := GetJson(baseURL+"/dates", &datesResp)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
-	return dates
+	return datesResp.Index
 }
 
-func FetchRelations() map[string]Relation {
-	var relations map[string]Relation
-	err := GetJson(baseURL+"/relation", &relations)
+func FetchRelations() []Relation {
+	var relResp RelationResponse
+	err := GetJson(baseURL+"/relation", &relResp)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
-	return relations
+	return relResp.Index
 }
