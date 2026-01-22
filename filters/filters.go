@@ -3,8 +3,8 @@
 package filters
 
 import (
-	"groupie-tracker/modules"
 	"fmt"
+	"groupie-tracker/modules"
 )
 
 // FilterCriteria définit les critères de filtrage
@@ -39,12 +39,19 @@ func ApplyFilters(data *modules.GroupieData, criteria FilterCriteria) []modules.
 			continue
 		}
 
-		
-		// filtrer par localisation
+		// filtrer par localisation (via data.Locations par ID d'artiste)
 		if len(criteria.Locations) > 0 {
 			matched := false
+			// Récupérer les localisations de l'artiste à partir de data.Locations
+			var artistLocations []string
+			for _, loc := range data.Locations {
+				if loc.ID == artist.ID {
+					artistLocations = loc.Locations
+					break
+				}
+			}
 			for _, loc := range criteria.Locations {
-				for _, artistLoc := range artist.Locations {
+				for _, artistLoc := range artistLocations {
 					if loc == artistLoc {
 						matched = true
 						break
@@ -74,8 +81,8 @@ func ApplyFilters(data *modules.GroupieData, criteria FilterCriteria) []modules.
 				continue
 			}
 		}
-				
-		// Si l'artiste passe tous les filtres, l'ajouter à la liste filtrée		
+
+		// Si l'artiste passe tous les filtres, l'ajouter à la liste filtrée
 		filtered = append(filtered, artist)
 	}
 

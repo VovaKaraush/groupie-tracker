@@ -3,9 +3,9 @@ package modules
 // GroupieData regroupe toutes les données fetchées de l'API
 type GroupieData struct {
 	Artists   []Artist
-	Locations map[string][]string
-	Dates     map[string][]string
-	Relations map[string]Relation
+	Locations []Location
+	Dates     []DateInfo
+	Relations []Relation
 }
 
 // Models used by the API
