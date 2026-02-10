@@ -8,7 +8,6 @@ type GroupieData struct {
 	Relations []Relation
 }
 
-// Models used by the API
 type Artist struct {
 	ID               int      `json:"id"`
 	Image            string   `json:"image"`
@@ -16,9 +15,9 @@ type Artist struct {
 	Members          []string `json:"members"`
 	CreationDate     int      `json:"creationDate"`
 	FirstAlbum       string   `json:"firstAlbum"`
-	ConcertLocations string   `json:"locations"`    // !!link!!
-	ConcertDates     string   `json:"concertDates"` // !!link!!
-	Relations        string   `json:"relations"`    // !!link!!
+	ConcertLocations string   `json:"locations"`
+	ConcertDates     string   `json:"concertDates"`
+	Relations        string   `json:"relations"`
 }
 
 type Location struct {

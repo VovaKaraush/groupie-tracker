@@ -8,103 +8,56 @@
 <body>
     <h1>Groupie Tracker</h1>
     
-    <h2>Recherche</h2>
-    <input type="text" id="search" placeholder="Rechercher un artiste..." onkeyup="filterArtists()">
-    
-    <h2>Filtres</h2>
-    <div>
-        <label>Date de création (min):</label>
-        <input type="number" id="creationDateMin" placeholder="Année min">
-        
-        <label>Date de création (max):</label>
-        <input type="number" id="creationDateMax" placeholder="Année max">
-    </div>
-    
-    <div>
-        <label>Premier album (min):</label>
-        <input type="number" id="firstAlbumMin" placeholder="Année min">
-        
-        <label>Premier album (max):</label>
-        <input type="number" id="firstAlbumMax" placeholder="Année max">
-    </div>
-    
-    <div>
-        <label>Nombre de membres (min):</label>
-        <input type="number" id="membersMin" placeholder="Min">
-        
-        <label>Nombre de membres (max):</label>
-        <input type="number" id="membersMax" placeholder="Max">
-    </div>
-    
-    <div>
-        <label>Localisation:</label>
-        <input type="text" id="locations" placeholder="Villes (séparées par des virgules)">
-    </div>
-    
-    <button onclick="filterArtists()">Filtrer</button>
-    
-    <div id="results"></div>
+    <form method="get" action="/search">
+        <h2>Recherche</h2>
+        <input type="text" name="q" placeholder="Rechercher un artiste..." value="{{.Q}}">
 
-    <script>
-        // Charger tous les artistes au démarrage
-        function loadAllArtists() {
-            fetch('/search?q=')
-                .then(res => res.json())
-                .then(artists => {
-                    if (artists && artists.length > 0) {
-                        displayResults(artists);
-                    }
-                })
-                .catch(err => console.error('Erreur:', err));
-        }
+        <h2>Filtres</h2>
+        <div>
+            <label>Date de création (min):</label>
+            <input type="number" name="creationDateMin" placeholder="Année min" value="{{.CreationDateMin}}">
+            <label>Date de création (max):</label>
+            <input type="number" name="creationDateMax" placeholder="Année max" value="{{.CreationDateMax}}">
+        </div>
 
-        function filterArtists() {
-            const query = document.getElementById('search').value;
-            const creationDateMin = parseInt(document.getElementById('creationDateMin').value) || 0;
-            const creationDateMax = parseInt(document.getElementById('creationDateMax').value) || 0;
-            const firstAlbumMin = parseInt(document.getElementById('firstAlbumMin').value) || 0;
-            const firstAlbumMax = parseInt(document.getElementById('firstAlbumMax').value) || 0;
-            const membersMin = parseInt(document.getElementById('membersMin').value) || 0;
-            const membersMax = parseInt(document.getElementById('membersMax').value) || 0;
-            const locationsInput = document.getElementById('locations').value;
-            const locations = locationsInput ? locationsInput.split(',').map(l => l.trim()) : [];
-            
-            const params = new URLSearchParams();
-            params.append('q', query);
-            params.append('creationDateMin', creationDateMin);
-            params.append('creationDateMax', creationDateMax);
-            params.append('firstAlbumMin', firstAlbumMin);
-            params.append('firstAlbumMax', firstAlbumMax);
-            params.append('membersMin', membersMin);
-            params.append('membersMax', membersMax);
-            locations.forEach(loc => params.append('locations', loc));
-            
-            fetch(`/search?${params.toString()}`)
-                .then(res => res.json())
-                .then(artists => displayResults(artists))
-                .catch(err => console.error('Erreur:', err));
-        }
+        <div>
+            <label>Premier album (min):</label>
+            <input type="number" name="firstAlbumMin" placeholder="Année min" value="{{.FirstAlbumMin}}">
 
-        function displayResults(artists) {
-            const resultsDiv = document.getElementById('results');
-            
-            if (!artists || artists.length === 0) {
-                resultsDiv.innerHTML = '<p>Aucun résultat</p>';
-                return;
-            }
+            <label>Premier album (max):</label>
+            <input type="number" name="firstAlbumMax" placeholder="Année max" value="{{.FirstAlbumMax}}">
+        </div>
 
-            resultsDiv.innerHTML = artists.map(a => `
+        <div>
+            <label>Nombre de membres (min):</label>
+            <input type="number" name="membersMin" placeholder="Min" value="{{.MembersMin}}">
+
+            <label>Nombre de membres (max):</label>
+            <input type="number" name="membersMax" placeholder="Max" value="{{.MembersMax}}">
+        </div>
+
+        <div>
+            <label>Localisation:</label>
+            <input type="text" name="locations" placeholder="Villes (séparées par des virgules)" value="{{.Locations}}">
+        </div>
+
+        <button type="submit">Filtrer</button>
+    </form>
+    
+    <div id="results">
+        {{if .Artists}}
+            {{range .Artists}}
                 <div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
-                    <p><strong>${a.name}</strong></p>
-                    <p>Création: ${a.creationDate}</p>
-                    <p>Premier album: ${a.firstAlbum}</p>
-                    <p>Membres: ${a.members.join(', ')}</p>
+                    <p><strong>{{.Name}}</strong></p>
+                    <p>Création: {{.CreationDate}}</p>
+                    <p>Premier album: {{.FirstAlbum}}</p>
+                    <p>Membres: {{range $i, $m := .Members}}{{if $i}}, {{end}}{{$m}}{{end}}</p>
                 </div>
-            `).join('');
-        }
+            {{end}}
+        {{else}}
+            <p>Aucun résultat</p>
+        {{end}}
+    </div>
 
-        // Charger les artistes au chargement de la page
-        window.onload = loadAllArtists;
-    </script>
 </body>
 </html>
