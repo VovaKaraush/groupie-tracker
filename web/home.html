@@ -72,6 +72,7 @@
                                         <p class="meta">Premier album: {{.FirstAlbum}}</p>
                                         <p class="meta">Nombre de membres: {{len .Members}}</p>
                                         <p class="meta">Membres: {{range $i, $m := .Members}}{{if $i}}, {{end}}{{$m}}{{end}}</p>
+                                        <p class="meta">Localisation: Paris, Londres, New York...        <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer"> voir sur maps </a></p>
                                     </div>
                                     <div class="card-details">
                                         <img class="card-image" src="{{.Image}}" alt="Portrait de {{.Name}}">

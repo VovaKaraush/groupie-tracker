@@ -48,7 +48,7 @@ class CardManager {
    */
   attachEventListeners(card) {
     card.addEventListener("mouseenter", () => this.handleCardHover(card));
-    card.addEventListener("mouseleave", () => this.collapseCard(card));
+    card.addEventListener("mouseleave", () => this.collapseCard(card, true));
   }
 
   /**
@@ -78,6 +78,9 @@ class CardManager {
       return;
     }
 
+    // Mark as animating to prevent premature collapse
+    card._isAnimating = true;
+
     const grid = card.closest(".grid");
     if (!grid) {
       return;
@@ -99,26 +102,38 @@ class CardManager {
     );
 
     // Create placeholder to maintain grid layout
-    const placeholder = this.createPlaceholder(cardRect);
+    const placeholder = this.createPlaceholder(cardRect, card);
     card.parentNode.insertBefore(placeholder, card);
     card._placeholder = placeholder;
 
     // Prepare card for expansion
     grid.classList.add("is-expanded");
-    card.classList.add("is-expanded");
     card.classList.remove("is-countdown", "is-armed");
     card.style.position = "absolute";
     card.style.top = `${currentTop}px`;
     card.style.left = `${currentLeft}px`;
     card.style.width = `${cardRect.width}px`;
     card.style.height = `${cardRect.height}px`;
+    
+    // Force reflow to ensure initial position is applied
+    card.offsetHeight;
+    
+    // Now add expanded class and animate
+    card.classList.add("is-expanded");
 
-    // Animate to target dimensions
+    // Animate to target dimensions with a small delay
     requestAnimationFrame(() => {
-      card.style.top = `${targetDimensions.top}px`;
-      card.style.left = `${targetDimensions.left}px`;
-      card.style.width = `${targetDimensions.width}px`;
-      card.style.height = `${targetDimensions.height}px`;
+      requestAnimationFrame(() => {
+        card.style.top = `${targetDimensions.top}px`;
+        card.style.left = `${targetDimensions.left}px`;
+        card.style.width = `${targetDimensions.width}px`;
+        card.style.height = `${targetDimensions.height}px`;
+        
+        // Clear animating flag after animation completes
+        setTimeout(() => {
+          card._isAnimating = false;
+        }, 280);
+      });
     });
   }
 
@@ -152,18 +167,31 @@ class CardManager {
   /**
    * Create placeholder element to preserve grid spacing
    */
-  createPlaceholder(cardRect) {
+  createPlaceholder(cardRect, card) {
     const placeholder = document.createElement("div");
     placeholder.className = "card-placeholder";
     placeholder.style.width = `${cardRect.width}px`;
-    placeholder.style.height = "180px";
+    placeholder.style.height = "220px"; // Fixed height matching CSS --card-height
+    
+    // Attach hover events to placeholder to maintain expansion
+    placeholder.addEventListener("mouseenter", () => {
+      if (card._expandTimer) {
+        clearTimeout(card._expandTimer);
+      }
+      card.classList.add("is-hovered");
+    });
+    
+    placeholder.addEventListener("mouseleave", () => {
+      this.collapseCard(card, true);
+    });
+    
     return placeholder;
   }
 
   /**
    * Collapse expanded card back to normal size
    */
-  collapseCard(card) {
+  collapseCard(card, force = false) {
     const grid = card.closest(".grid");
 
     // Clear any pending expand timer
@@ -272,7 +300,7 @@ class CardManager {
       this.cards.forEach(card => {
         if (card.classList.contains("is-expanded")) {
           if (!card.contains(event.target)) {
-            this.collapseCard(card);
+            this.collapseCard(card, true);
           }
         }
       });
