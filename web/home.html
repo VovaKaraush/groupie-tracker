@@ -4,63 +4,88 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Search Artists</title>
+        <link rel="stylesheet" href="/web/styles.css">
     </head>
     <body>
-        <h1>Groupie Tracker</h1>
-        
-        <form method="GET" action="/">
-            
-            <h2>Recherche</h2>
-            <input type="text" id="search" name="q" placeholder="Rechercher un artiste..." value="{{.Filters.Q}}">
-            
-            
-            <h2>Filtres</h2>
-            <div>
-                <label>Date de création (min):</label>
-                <input type="number" id="creationDateMin" name="creationDateMin" placeholder="Année min" value="{{.Filters.CreationDateMin}}">
-                
-                <label>Date de création (max):</label>
-                <input type="number" id="creationDateMax" name="creationDateMax" placeholder="Année max" value="{{.Filters.CreationDateMax}}">
-            </div>
-            
-            <div>
-                <label>Premier album (min):</label>
-                <input type="number" id="firstAlbumMin" name="firstAlbumMin" placeholder="Année min" value="{{.Filters.FirstAlbumMin}}">
-                
-                <label>Premier album (max):</label>
-                <input type="number" id="firstAlbumMax" name="firstAlbumMax" placeholder="Année max" value="{{.Filters.FirstAlbumMax}}">
-            </div>
-            
-            <div>
-                <label>Nombre de membres (min):</label>
-                <input type="number" id="membersMin" name="membersMin" placeholder="Min" value="{{.Filters.MembersMin}}">
-                
-                <label>Nombre de membres (max):</label>
-                <input type="number" id="membersMax" name="membersMax" placeholder="Max" value="{{.Filters.MembersMax}}">
-            </div>
-            
-            <div>
-                <label>Localisation:</label>
-                <input type="text" id="locations" name="locations" placeholder="Villes (séparées par des virgules)" value="{{.Filters.Locations}}">
-            </div>
-            
-            <button type="submit">Filters</button>
-        </form>
-        
-        <div id="results"></div>
-            {{if .Artists}}
-                {{range .Artists}}
-                    <div style="border:1px solid #ffffff; padding:10px; margin:10px 0;">
-                        <p><strong>{{.Name}}</strong></p>
-                        <p>Création: {{.CreationDate}}</p>
-                        <p>Premier album: {{.FirstAlbum}}</p>
-                        <p>Membres:{{range $i, $m := .Members}}{{if $i}}, {{end}}{{$m}}{{end}}</p>
+        <div class="container">
+            <header>
+                <h1>Groupie Tracker</h1>
+            </header>
+
+            <div class="content">
+                <form class="filters" method="GET" action="/">
+                    <h2>Recherche</h2>
+                    <input type="text" id="search" name="q" placeholder="Rechercher un artiste..." value="{{.Filters.Q}}">
+
+                    <h2>Filtres</h2>
+                    <div class="filters-grid">
+                        <div class="field-group">
+                            <div class="group-title">Date de création</div>
+                            <div class="group-field">
+                                <label for="creationDateMin">Min</label>
+                                <input type="number" id="creationDateMin" name="creationDateMin" placeholder="Année min" value="{{.Filters.CreationDateMin}}">
+                                <label for="creationDateMax">Max</label>
+                                <input type="number" id="creationDateMax" name="creationDateMax" placeholder="Année max" value="{{.Filters.CreationDateMax}}">
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <div class="group-title">Premier album</div>
+                            <div class="group-field">
+                                <label for="firstAlbumMin">Min</label>
+                                <input type="number" id="firstAlbumMin" name="firstAlbumMin" placeholder="Année min" value="{{.Filters.FirstAlbumMin}}">
+                                <label for="firstAlbumMax">Max</label>
+                                <input type="number" id="firstAlbumMax" name="firstAlbumMax" placeholder="Année max" value="{{.Filters.FirstAlbumMax}}">
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <div class="group-title">Nombre de membres</div>
+                            <div class="group-field">
+                                <label for="membersMin">Min</label>
+                                <input type="number" id="membersMin" name="membersMin" placeholder="Min" value="{{.Filters.MembersMin}}">
+                                <label for="membersMax">Max</label>
+                                <input type="number" id="membersMax" name="membersMax" placeholder="Max" value="{{.Filters.MembersMax}}">
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <div class="group-title">Localisation</div>
+                            <div class="group-field">
+                                <label for="locations">Villes</label>
+                                <input type="text" id="locations" name="locations" placeholder="Villes (séparées par des virgules)" value="{{.Filters.Locations}}">
+                            </div>
+                        </div>
                     </div>
-                {{end}}
-            {{else}}
-                <p>Aucun résultat</p>
-            {{end}}
+
+                    <button type="submit">Filtrer</button>
+                </form>
+
+                <main class="results">
+                    {{if .Artists}}
+                        <div class="grid">
+                            {{range .Artists}}
+                                <article class="card">
+                                    <div class="card-summary">
+                                        <p><strong>{{.Name}}</strong></p>
+                                        <p class="meta">Création: {{.CreationDate}}</p>
+                                        <p class="meta">Premier album: {{.FirstAlbum}}</p>
+                                        <p class="meta">Nombre de membres: {{len .Members}}</p>
+                                        <p class="meta">Membres: {{range $i, $m := .Members}}{{if $i}}, {{end}}{{$m}}{{end}}</p>
+                                    </div>
+                                    <div class="card-details">
+                                        <img class="card-image" src="{{.Image}}" alt="Portrait de {{.Name}}">
+                                    </div>
+                                </article>
+                            {{end}}
+                        </div>
+                    {{else}}
+                        <div class="no-results"><p>Aucun résultat</p></div>
+                    {{end}}
+                </main>
+            </div>
         </div>
+        <script src="/web/script.js"></script>
     </body>
 </html>
     

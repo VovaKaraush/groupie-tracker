@@ -25,6 +25,9 @@ func main() {
 
 	handlers.SortData(&data)
 
+	// Serve static assets (CSS, images, etc.) from /web/.
+	http.Handle("/web/", http.StripPrefix("/web/", http.FileServer(http.Dir("web"))))
+
 	http.HandleFunc("/", handlers.HomeHandler)
 	http.HandleFunc("/search", handlers.SearchHandler)
 	http.HandleFunc("/artist", handlers.ArtistHandler)
