@@ -3,19 +3,24 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Search Artists</title>
+        <title>Group Tracker</title>
         <link rel="stylesheet" href="/web/styles.css">
     </head>
     <body>
         <div class="container">
             <header>
-                <h1>Groupie Tracker</h1>
+                <h1 href="/">Groupie Tracker</h1>
             </header>
 
             <div class="content">
                 <form class="filters" method="GET" action="/">
-                    <h2>Recherche</h2>
-                    <input type="text" id="search" name="q" placeholder="Rechercher un artiste..." value="{{.Filters.Q}}">
+                    <div class="search-header">
+                        <div>
+                            <h2>Recherche </h2>
+                            <input type="text" id="search" name="q" placeholder="Rechercher un artiste..." value="{{.Filters.Q}}">
+                        </div>
+                        <a href="/" class="reset-button">Réinitialiser</a>
+                    </div>
 
                     <h2>Filtres</h2>
                     <div class="filters-grid">
@@ -52,8 +57,14 @@
                         <div class="field-group">
                             <div class="group-title">Localisation</div>
                             <div class="group-field">
-                                <label for="locations">Villes</label>
-                                <input type="text" id="locations" name="locations" placeholder="Villes (séparées par des virgules)" value="{{.Filters.Locations}}">
+                                <div id="locationCheckboxes" class="location-checkboxes">
+                                    {{range .AllLocations}}
+                                        <div class="checkbox-wrapper">
+                                            <span class="checkbox-text">{{formatLocation .}}</span>
+                                            <input type="checkbox" name="locations" value="{{.}}" class="location-checkbox">
+                                        </div>
+                                    {{end}}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -65,19 +76,20 @@
                     {{if .Artists}}
                         <div class="grid">
                             {{range .Artists}}
-                                <article class="card">
-                                    <div class="card-summary">
-                                        <p><strong>{{.Name}}</strong></p>
-                                        <p class="meta">Création: {{.CreationDate}}</p>
-                                        <p class="meta">Premier album: {{.FirstAlbum}}</p>
-                                        <p class="meta">Nombre de membres: {{len .Members}}</p>
-                                        <p class="meta">Membres: {{range $i, $m := .Members}}{{if $i}}, {{end}}{{$m}}{{end}}</p>
-                                        <p class="meta">Localisation: Paris, Londres, New York...        <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer"> voir sur maps </a></p>
-                                    </div>
-                                    <div class="card-details">
-                                        <img class="card-image" src="{{.Image}}" alt="Portrait de {{.Name}}">
-                                    </div>
-                                </article>
+                                <a href="/detail?id={{.ID}}" class="card-link">
+                                    <article class="card">
+                                        <div class="card-summary">
+                                            <p><strong>{{.Name}}</strong></p>
+                                            <p class="meta">Création: {{.CreationDate}}</p>
+                                            <p class="meta">Premier album: {{.FirstAlbum}}</p>
+                                            <p class="meta">Nombre de membres: {{len .Members}}</p>
+                                            <p class="meta">Membres: {{range $i, $m := .Members}}{{if $i}}, {{end}}{{$m}}{{end}}</p>
+                                        </div>
+                                        <div class="card-details">
+                                            <img class="card-image" src="{{.Image}}" alt="Portrait de {{.Name}}">
+                                        </div>
+                                    </article>
+                                </a>
                             {{end}}
                         </div>
                     {{else}}

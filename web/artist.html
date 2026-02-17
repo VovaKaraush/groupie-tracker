@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{.Artist.Name}} - Group Tracker</title>
+        <link rel="stylesheet" href="/web/styles.css">
+        <link rel="stylesheet" href="/web/artist.css">
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <a href="/" class="back-link">← Retour</a>
+                <h1>{{.Artist.Name}}</h1>
+            </header>
+
+            <div class="artist-content">
+                <div class="artist-sidebar">
+                    <img class="artist-portrait" src="{{.Artist.Image}}" alt="Portrait de {{.Artist.Name}}">
+                    
+                    <div class="artist-info">
+                        <h2>Informations</h2>
+                        <div class="info-block">
+                            <p><strong>Date de création:</strong></p>
+                            <p class="info-value">{{.Artist.CreationDate}}</p>
+                        </div>
+                        <div class="info-block">
+                            <p><strong>Premier album:</strong></p>
+                            <p class="info-value">{{.Artist.FirstAlbum}}</p>
+                        </div>
+                        <div class="info-block">
+                            <p><strong>Nombre de membres:</strong></p>
+                            <p class="info-value">{{len .Artist.Members}}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <main class="artist-main">
+                    <section class="members-section">
+                        <h2>Membres</h2>
+                        <ul class="members-list">
+                            {{range .Artist.Members}}
+                                <li>{{.}}</li>
+                            {{end}}
+                        </ul>
+                    </section>
+
+                    <section class="concerts-section">
+                        <h2>Concerts</h2>
+                        {{if .ConcertList}}
+                            <div class="concerts-grid">
+                                {{range .ConcertList}}
+                                    <div class="concert-card">
+                                        <div class="concert-location">
+                                            <h3>{{formatLocation .City}}{{if .Country}} - <a href="{{googleMapsURL .City .Country}}" target="_blank" class="country-link">{{formatLocation .Country}}</a>{{end}}</h3>
+                                        </div>
+                                        <div class="concert-dates">
+                                            {{range .Dates}}
+                                                <span class="concert-date">{{.}}</span>
+                                            {{end}}
+                                        </div>
+                                    </div>
+                                {{end}}
+                            </div>
+                        {{else}}
+                            <p class="no-concerts">Aucun concert trouvé.</p>
+                        {{end}}
+                    </section>
+                </main>
+            </div>
+        </div>
+        <script src="/web/script.js"></script>
+    </body>
+</html>

@@ -31,6 +31,7 @@ func main() {
 	http.HandleFunc("/", handlers.HomeHandler)
 	http.HandleFunc("/search", handlers.SearchHandler)
 	http.HandleFunc("/artist", handlers.ArtistHandler)
+	http.HandleFunc("/detail", handlers.DetailHandler)
 
 	fmt.Println("Serveur démarré sur http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
