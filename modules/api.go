@@ -3,18 +3,43 @@ package modules
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"time"
 )
 
 var baseURL = "https://groupietrackers.herokuapp.com/api"
 
+var httpClient = &http.Client{Timeout: 10 * time.Second}
+
 func GetJson(url string, data interface{}) error {
-	resp, err := http.Get(url)
-	if err != nil {
-		return err
+	var lastErr error
+	for attempt := 1; attempt <= 3; attempt++ {
+		resp, err := httpClient.Get(url)
+		if err != nil {
+			lastErr = err
+			time.Sleep(time.Duration(attempt) * 200 * time.Millisecond)
+			continue
+		}
+
+		if resp.StatusCode != http.StatusOK {
+			body, _ := io.ReadAll(io.LimitReader(resp.Body, 8*1024))
+			resp.Body.Close()
+			lastErr = fmt.Errorf("unexpected status %d for %s: %s", resp.StatusCode, url, string(body))
+			time.Sleep(time.Duration(attempt) * 200 * time.Millisecond)
+			continue
+		}
+
+		decErr := json.NewDecoder(resp.Body).Decode(data)
+		resp.Body.Close()
+		if decErr == nil {
+			return nil
+		}
+
+		lastErr = decErr
+		time.Sleep(time.Duration(attempt) * 200 * time.Millisecond)
 	}
-	defer resp.Body.Close()
-	return json.NewDecoder(resp.Body).Decode(data)
+	return lastErr
 }
 
 func FetchArtists() []Artist {

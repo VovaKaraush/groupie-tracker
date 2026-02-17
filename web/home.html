@@ -56,12 +56,13 @@
 
                         <div class="field-group">
                             <div class="group-title">Localisation</div>
-                            <div class="group-field">
+                            <div class="group-field group-field-location">
+                                <input type="text" id="locationSearch" name="locationQuery" class="location-search" placeholder="Rechercher une ville..." value="{{.Filters.LocationQuery}}">
                                 <div id="locationCheckboxes" class="location-checkboxes">
                                     {{range .AllLocations}}
                                         <div class="checkbox-wrapper">
-                                            <span class="checkbox-text">{{formatLocation .}}</span>
                                             <input type="checkbox" name="locations" value="{{.}}" class="location-checkbox">
+                                            <span class="checkbox-text">{{formatLocation .}}</span>
                                         </div>
                                     {{end}}
                                 </div>

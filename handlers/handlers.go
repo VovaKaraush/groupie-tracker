@@ -32,6 +32,7 @@ type HomePageData struct {
 // All values are stored as strings to preserve form input state
 type FiltersView struct {
 	Q string
+	LocationQuery string
 
 	CreationDateMin string
 	CreationDateMax string
@@ -145,6 +146,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	firstAlbumMaxRaw := strings.TrimSpace(r.URL.Query().Get("firstAlbumMax"))
 	membersMinRaw := strings.TrimSpace(r.URL.Query().Get("membersMin"))
 	membersMaxRaw := strings.TrimSpace(r.URL.Query().Get("membersMax"))
+	locationQueryRaw := strings.TrimSpace(r.URL.Query().Get("locationQuery"))
 
 	creationDateMin, _ := strconv.Atoi(creationDateMinRaw)
 	creationDateMax, _ := strconv.Atoi(creationDateMaxRaw)
@@ -188,6 +190,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	page := HomePageData{
 		Filters: FiltersView{
 			Q:               q,
+			LocationQuery:   locationQueryRaw,
 			CreationDateMin: creationDateMinRaw,
 			CreationDateMax: creationDateMaxRaw,
 			FirstAlbumMin:   firstAlbumMinRaw,
@@ -196,7 +199,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 			MembersMax:      membersMaxRaw,
 			Locations:       strings.Join(locations, ","),
 		},
-		AllLocations: uniqueLocations(Data),
+		AllLocations: filterLocations(uniqueLocations(Data), locationQueryRaw),
 		Artists:      results,
 	}
 
@@ -290,6 +293,24 @@ func uniqueLocations(data *modules.GroupieData) []string {
 	}
 	sort.Strings(out)
 	return out
+}
+
+func filterLocations(locations []string, query string) []string {
+	query = strings.TrimSpace(strings.ToLower(query))
+	if query == "" {
+		return locations
+	}
+
+	filtered := make([]string, 0, len(locations))
+	for _, loc := range locations {
+		normalized := strings.ToLower(loc)
+		normalized = strings.ReplaceAll(normalized, "_", " ")
+		normalized = strings.ReplaceAll(normalized, "-", " ")
+		if strings.Contains(normalized, query) {
+			filtered = append(filtered, loc)
+		}
+	}
+	return filtered
 }
 
 // DetailHandler displays a detailed page for a single artist including members and concerts
